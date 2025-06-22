@@ -44,8 +44,11 @@ export default function ProfilePage() {
         credentials: 'include',
         body: JSON.stringify(body),
       });
-      const result = await res.json();
-      res.ok ? toast.success('Changes saved.') : toast.error('Failed to save changes.');
+      if (res.ok) {
+        toast.success('Changes saved.');
+      } else {
+        toast.error('Failed to save changes.');
+      }
     } catch {
       toast.error('Error saving changes.');
     }
