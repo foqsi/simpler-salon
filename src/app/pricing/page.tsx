@@ -3,67 +3,76 @@
 export default function PricingPage() {
   const tiers = [
     {
-      price: '$50',
-      title: 'Starter',
-      subtitle: 'For simple online presence',
+      price: '$0',
+      title: 'Free',
+      subtitle: 'So people can find you!',
       features: [
-        'Header, Landing Page, Footer',
+        'A home page',
+        'Basic Customization',
         'E-Gift Cards*',
       ],
       color: 'primary',
+      btnColor: 'primary',
+      href: '/register?tier=free',
       badge: null,
     },
     {
       price: '$200',
-      title: 'Essentials',
-      subtitle: 'Add gallery and services',
+      title: 'Starter',
+      subtitle: 'Display your services!',
       features: [
-        'Everything in Starter',
-        'Gallery + Services Section',
-        'Basic Customization',
+        'Everything in Free',
+        'Customizable Services Page',
         'E-Gift Cards*',
       ],
       color: 'secondary',
+      btnColor: 'secondary',
+      href: '/register?tier=starter',
       badge: 'Popular',
     },
     {
       price: '$300',
-      title: 'Appointments',
-      subtitle: 'Let clients book online',
+      title: 'Essentials',
+      subtitle: 'Show off your work!',
       features: [
-        'Everything in Essentials',
-        'Appointment Viewer',
-        'Moderate Customization',
+        'Everything in Starter',
+        'Customizable Gallery Page',
         'E-Gift Cards*',
       ],
-      color: 'accent',
+      color: 'primary',
+      btnColor: 'primary',
+      href: '/register?tier=essentials',
       badge: null,
     },
     {
       price: '$400',
-      title: 'Advanced',
-      subtitle: 'Client data collection + more',
+      title: 'Ultimate',
+      subtitle: 'Online appointments?',
       features: [
-        'Everything in Appointments',
-        'Custom Client Queries',
+        'Everything in Essentials',
+        'View Appointments',
         'Advanced Customization',
         'E-Gift Cards*',
       ],
-      color: 'info',
+      color: 'primary',
+      btnColor: 'primary',
+      href: '/register?tier=ultimate',
       badge: null,
     },
     {
-      price: '$600',
-      title: 'Premium',
+      price: ' ',
+      title: 'Custom',
       subtitle: 'Full customization + support',
       features: [
-        'Everything in Advanced',
+        'Everything in Ultimate',
         'Full Support',
         'Full Customization',
         'E-Gift Cards*',
       ],
-      color: 'success',
-      badge: 'Best Value',
+      color: 'secondary',
+      btnColor: 'primary', // for example
+      href: '/contact',
+      badge: null,
     },
   ];
 
@@ -94,14 +103,19 @@ export default function PricingPage() {
             <p className="text-sm text-base-content/70 mb-4">{tier.subtitle}</p>
 
             {/* Price */}
-            <p className="text-3xl font-bold mb-3">{tier.price}</p>
+            {tier.price.trim() ? (
+              <p className="text-3xl font-bold mb-3">{tier.price}</p>
+            ) : (
+              <div className="h-12" /> // Approx height of the price
+            )}
+
 
             {/* CTA */}
             <a
-              href="/register"
-              className={`btn btn-${tier.color} w-full mb-6`}
+              href={tier.href}
+              className={`btn btn-${tier.btnColor} w-full mb-6`}
             >
-              Get Started
+              {tier.title === 'Custom' ? 'Contact Us' : 'Get Started'}
             </a>
 
             {/* Divider */}

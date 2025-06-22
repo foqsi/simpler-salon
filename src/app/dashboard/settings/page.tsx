@@ -12,7 +12,7 @@ export default function SettingsPage() {
 
       <section className="bg-base-200 p-6 rounded-lg shadow space-y-4">
         <h2 className="text-lg font-semibold">General Preferences</h2>
-        <p className="text-sm text-gray-400">This section could include things like default view, language, etc.</p>
+        <p className="text-sm text-gray-400">Manage your efault view, language, etc.</p>
         <div className="flex items-center justify-between py-2 border-t border-base-300">
           <span>Coming soon...</span>
         </div>

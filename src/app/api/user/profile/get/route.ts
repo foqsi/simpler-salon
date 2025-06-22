@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     const { data: userData, error: userError } = await supabase
       .from('users')
-      .select('first_name, last_name, phone, email, tier, business_id')
+      .select('first_name, last_name, phone, email, tier, pending_tier, business_id')
       .eq('id', user.id)
       .single();
 

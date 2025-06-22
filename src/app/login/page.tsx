@@ -23,11 +23,27 @@ export default function LoginPage() {
 
     setLoading(false);
 
-    if (error) {
-      setErrorMsg(error.message);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData.session?.user?.id;
+
+    if (!userId) {
+      setErrorMsg('Login failed: user ID not found');
+      return;
+    }
+
+    // fetch user profile from your DB (not Supabase Auth)
+    const userRes = await fetch('/api/user/profile/get', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    const { users: user } = await userRes.json();
+
+    if (user.tier === 'pending') {
+      setLoading(true);
+      setTimeout(() => router.push('/payment/pending'), 1000);
     } else {
-      console.log(email);
-      router.push('/dashboard'); // ✅ redirect only if login succeeds
+      router.push('/dashboard');
     }
   };
 
@@ -68,13 +84,6 @@ export default function LoginPage() {
 
           <Button variant="primary" className="w-full" onClick={handleLogin} loading={loading}>
             Log In
-          </Button>
-
-          <div className="divider">OR</div>
-
-          <Button className="w-full" variant="outline">
-            <img src="/google.svg" alt="Google" className="h-5 w-5" />
-            Continue with Google
           </Button>
         </div>
 

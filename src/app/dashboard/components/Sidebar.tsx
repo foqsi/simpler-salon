@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Home, Image, Calendar, Scissors, X } from 'lucide-react';
 
 const links = [
-  { href: '/dashboard', label: 'Dashboard', icon: <Home size={18} /> },
+  { href: '/dashboard', label: 'Home', icon: <Home size={18} /> },
   { href: '/dashboard/services', label: 'Services', icon: <Scissors size={18} /> },
   { href: '/dashboard/gallery', label: 'Gallery', icon: <Image size={18} /> },
   { href: '/dashboard/appointments', label: 'Appointments', icon: <Calendar size={18} /> },
@@ -31,7 +31,7 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
           <button onClick={onClose} className="btn btn-sm btn-ghost md:hidden">
             <X size={20} />
           </button>
-          <h2 className="text-xl font-bold">Admin Panel</h2>
+          <h2 className="text-xl font-bold">Dashboard</h2>
         </div>
 
 

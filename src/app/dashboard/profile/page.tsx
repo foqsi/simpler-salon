@@ -1,63 +1,42 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Building, Mail, Phone, User } from 'lucide-react';
-import { Button } from '@/components/ui';
 import { toast } from 'react-hot-toast';
-
-interface ProfileData {
-  first_name: string;
-  last_name: string;
-  phone: string;
-  email: string;
-  tier: string;
-}
-
-interface BusinessData {
-  name: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  phone: string;
-  email: string;
-  custom_domain: string;
-}
+import EditableCard from '@/components/EditableCard';
+import { PenLine } from 'lucide-react';
+import ProfileSkeleton from '@/components/ProfileSkeleton';
+import type { User, Business } from '@/types/user';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [business, setBusiness] = useState<BusinessData | null>(null);
+  const [profile, setProfile] = useState<User | null>(null);
+  const [business, setBusiness] = useState<Business | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('Fetching profile data...');
     const fetchProfile = async () => {
       const res = await fetch('/api/user/profile/get', { credentials: 'include' });
       const data = await res.json();
       if (res.ok) {
-        setLoading(false);
         setProfile(data.users);
         setBusiness(data.business);
       }
+      setLoading(false);
     };
     fetchProfile();
   }, []);
 
-  const handleFieldUpdate = (field: keyof ProfileData | keyof BusinessData, value: string) => {
-    if (profile && field in profile) {
+  const updateField = (fullKey: string, value: string) => {
+    const [scope, field] = fullKey.split('.') as ['profile' | 'business', keyof User | keyof Business];
+    if (scope === 'profile' && profile) {
       setProfile({ ...profile, [field]: value });
-    } else if (business && field in business) {
+    } else if (scope === 'business' && business) {
       setBusiness({ ...business, [field]: value });
     }
   };
 
   const saveChanges = async () => {
-    const body = {
-      ...profile,
-      ...business,
-    };
-
+    const body = { ...profile, ...business };
     try {
       const res = await fetch('/api/user/profile/update', {
         method: 'PUT',
@@ -65,136 +44,72 @@ export default function ProfilePage() {
         credentials: 'include',
         body: JSON.stringify(body),
       });
-
       const result = await res.json();
-      if (!res.ok) {
-        console.error('Failed to save:', result.error);
-        toast.error('Failed to save changes.');
-      } else {
-        toast.success('Changes saved.');
-      }
-    } catch (err) {
-      console.error('Error saving changes:', err);
+      res.ok ? toast.success('Changes saved.') : toast.error('Failed to save changes.');
+    } catch {
       toast.error('Error saving changes.');
     }
   };
 
   if (loading) {
     return (
-      <main className="max-w-5xl mx-auto py-12 px-4 space-y-6">
-        <div className="space-y-2">
-          <div className="h-8 w-48 skeleton" />
-          <div className="h-4 w-80 skeleton" />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2].map((card) => (
-            <section
-              key={card}
-              className="bg-base-200 p-5 rounded-lg shadow space-y-4"
-            >
-              <div className="h-6 w-32 skeleton" />
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex justify-between items-center py-2">
-                  <div className="h-4 w-24 skeleton" />
-                  <div className="h-6 w-40 skeleton" />
-                </div>
-              ))}
-            </section>
-          ))}
-        </div>
-      </main>
-    );
+      <ProfileSkeleton />
+    )
   }
 
-  if (!profile) return <p className="text-center mt-10 text-sm text-error">Unable to load profile.</p>;
-
-  if (!profile && !business) {
-    return <p className="text-center mt-10 text-sm text-warning">No profile or business data found.</p>;
+  if (!profile || !business) {
+    return <p className="text-center mt-10 text-error">Please check your email to verify your account. Check spam, too.
+      <br /> If you do not see anything, please reach out to Simpler Salon.</p>;
   }
-
-  const renderField = (
-    label: string,
-    field: keyof ProfileData | keyof BusinessData,
-    value: string | undefined
-  ) => {
-    const isEditing = editing === field;
-    return (
-      <div className="flex justify-between items-center py-2">
-        <label className="font-medium">{label}</label>
-        {isEditing ? (
-          <input
-            className="input input-sm input-bordered ml-4"
-            value={value ?? ''}
-            onChange={(e) => handleFieldUpdate(field, e.target.value)}
-            onBlur={() => {
-              setEditing(null);
-              saveChanges();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                setEditing(null);
-                saveChanges();
-              }
-            }}
-            autoFocus
-          />
-
-        ) : (
-          <div className="flex items-center gap-2">
-            <span>{value || '-'}</span>
-            <button onClick={() => setEditing(field)} className="text-blue-500 text-xs hover:underline">
-              edit
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
-    <main className="max-w-5xl mx-auto py-12 px-4 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Profile Settings</h1>
+    <main className="max-w-5xl mx-auto px-4 py-8 space-y-10">
+      <div className="space-y-1 text-center">
+        <h2 className="text-sm font-semibold text-gray-500">Account Settings</h2>
+        <h1 className="text-3xl font-bold">Profile</h1>
         <p className="text-sm text-gray-400">
-          Tip: Click any field to edit. Press <kbd>Enter</kbd> or click away to save changes.
+          Click any field to edit. Press <kbd>Enter</kbd> or click away to save.
+        </p>
+        <p className="flex items-center justify-center gap-1 text-xs text-gray-500">
+          <PenLine size={12} className="inline-block" />
+          indicates editable fields
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <EditableCard
+          title="Your Details"
+          fields={[
+            { label: 'Tier', fieldKey: 'profile.tier', value: profile.tier, editable: false },
+            { label: 'First Name', fieldKey: 'profile.first_name', value: profile.first_name, editable: false },
+            { label: 'Last Name', fieldKey: 'profile.last_name', value: profile.last_name },
+            { label: 'Phone', fieldKey: 'profile.phone', value: profile.phone, editable: false },
+            { label: 'Email', fieldKey: 'profile.email', value: profile.email, editable: false },
+          ]}
+          editingField={editing}
+          setEditingField={setEditing}
+          updateField={updateField}
+          onSave={saveChanges}
+        />
 
-        {/* Profile Card */}
-        <section className="bg-base-200 p-5 rounded-lg shadow space-y-4">
-          <h2 className="text-lg font-semibold">Your Profile</h2>
-          {profile && (
-            <>
-              {renderField('First Name', 'first_name', profile.first_name)}
-              {renderField('Last Name', 'last_name', profile.last_name)}
-              {renderField('Phone', 'phone', profile.phone)}
-              {renderField('Email', 'email', profile.email)}
-              {renderField('Tier', 'tier', profile.tier)}
-            </>
-          )}
-        </section>
-
-        {/* Business Card */}
-        <section className="bg-base-200 p-5 rounded-lg shadow space-y-4">
-          <h2 className="text-lg font-semibold">Your Website</h2>
-          {business && (
-            <>
-              {renderField('Business Name', 'name', business.name)}
-              {renderField('Street', 'street', business.street)}
-              {renderField('City', 'city', business.city)}
-              {renderField('State', 'state', business.state)}
-              {renderField('Zip Code', 'zip', business.zip)}
-              {renderField('Phone', 'phone', business.phone)}
-              {renderField('Email', 'email', business.email)}
-              {renderField('Custom Domain', 'custom_domain', business.custom_domain)}
-            </>
-          )}
-        </section>
+        <EditableCard
+          title="Your Business Details"
+          fields={[
+            { label: 'Business Name', fieldKey: 'business.name', value: business.name },
+            { label: 'Street', fieldKey: 'business.street', value: business.street },
+            { label: 'City', fieldKey: 'business.city', value: business.city },
+            { label: 'State', fieldKey: 'business.state', value: business.state },
+            { label: 'Zip', fieldKey: 'business.zip', value: business.zip },
+            { label: 'Phone', fieldKey: 'business.phone', value: business.phone },
+            { label: 'Email', fieldKey: 'business.email', value: business.email },
+            { label: 'Custom Domain', fieldKey: 'business.custom_domain', value: business.custom_domain },
+          ]}
+          editingField={editing}
+          setEditingField={setEditing}
+          updateField={updateField}
+          onSave={saveChanges}
+        />
       </div>
     </main>
   );
-
 }
