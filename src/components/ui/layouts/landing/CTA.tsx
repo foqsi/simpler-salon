@@ -1,7 +1,5 @@
 'use client';
 
-import Button from '@/components/ui/Button';
-
 export default function CTASection() {
   return (
     <section className="bg-primary text-primary-content text-center px-4 py-16">

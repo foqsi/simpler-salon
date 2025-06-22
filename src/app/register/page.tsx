@@ -100,7 +100,7 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold">Sign up for your website</h1>
             <p className="text-sm">No monthly fees. One-time payment. Own it forever.</p>
             <p className="text-sm text-info">
-              You're signing up for the <strong>{tier.toUpperCase()}</strong> plan.
+              You&apos;re signing up for the <strong>{tier.toUpperCase()}</strong> plan.
             </p>
             <div className="space-y-4">
               <InputField placeholder="First name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
@@ -152,7 +152,7 @@ export default function RegisterPage() {
           </section>
           <aside className="hidden md:flex flex-col justify-center p-8 w-full bg-base-300">
             <h2 className="text-2xl font-bold mb-4">What You’ll Get</h2>
-            <p className="mb-6 text-sm">Whether you're just starting out or want a full salon booking platform, Simpler Salon has a one-time solution for you.</p>
+            <p className="mb-6 text-sm">Whether you&apos;re just starting out or want a full salon booking platform, Simpler Salon has a one-time solution for you.</p>
             <h3 className="text-lg font-semibold mb-2">Included benefits:</h3>
             <ul className="space-y-2 text-sm">
               <li>✔️ No monthly subscriptions</li>
@@ -168,7 +168,7 @@ export default function RegisterPage() {
       </main>
       <Modal isOpen={showModal}>
         <h2 className="text-xl font-bold mb-2">Check Your Email</h2>
-        <p className="text-sm text-gray-500">We've sent a confirmation link to <strong>{email}</strong>. Please verify your email to continue.</p>
+        <p className="text-sm text-gray-500">We&apos;ve sent a confirmation link to <strong>{email}</strong>. Please verify your email to continue.</p>
       </Modal>
     </>
   );

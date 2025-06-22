@@ -35,10 +35,12 @@ export default function PaymentSuccessPage() {
         } else {
           setMessage('Payment succeeded but we couldn’t update your account. Please contact support.');
         }
-      } catch (err: any) {
-        setMessage(err.message);
-      } finally {
-        setLoading(false);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setMessage(err.message);
+        } else {
+          setMessage('An unknown error occurred.');
+        }
       }
     };
 

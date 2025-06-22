@@ -23,6 +23,12 @@ export default function LoginPage() {
 
     setLoading(false);
 
+    if (error) {
+      setLoading(false);
+      setErrorMsg(error.message || 'Login failed');
+      return;
+    }
+
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user?.id;
 
