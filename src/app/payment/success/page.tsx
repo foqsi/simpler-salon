@@ -1,30 +1,29 @@
-// app/payment/success/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 export default function PaymentSuccessPage() {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get('session_id');
-
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!sessionId) {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('session_id');
+    setSessionId(id);
+
+    if (!id) {
       setMessage('Missing session ID. Please contact support.');
       setLoading(false);
       return;
     }
 
-    // Optional: Verify the session and upgrade the user
     const verifyPayment = async () => {
       try {
         const res = await fetch('/api/stripe/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId }),
+          body: JSON.stringify({ sessionId: id }),
         });
 
         if (!res.ok) throw new Error('Payment verification failed.');
@@ -41,11 +40,13 @@ export default function PaymentSuccessPage() {
         } else {
           setMessage('An unknown error occurred.');
         }
+      } finally {
+        setLoading(false);
       }
     };
 
     verifyPayment();
-  }, [sessionId]);
+  }, []);
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-base-100 text-base-content px-4">
