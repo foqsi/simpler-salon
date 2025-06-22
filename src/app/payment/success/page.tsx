@@ -3,16 +3,14 @@
 import { useEffect, useState } from 'react';
 
 export default function PaymentSuccessPage() {
-  const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('session_id');
-    setSessionId(id);
+    const sessionId = params.get('session_id');
 
-    if (!id) {
+    if (!sessionId) {
       setMessage('Missing session ID. Please contact support.');
       setLoading(false);
       return;
@@ -23,7 +21,7 @@ export default function PaymentSuccessPage() {
         const res = await fetch('/api/stripe/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId: id }),
+          body: JSON.stringify({ sessionId }),
         });
 
         if (!res.ok) throw new Error('Payment verification failed.');
