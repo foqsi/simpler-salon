@@ -6,6 +6,7 @@ import EditableCard from '@/components/EditableCard';
 import { PenLine } from 'lucide-react';
 import ProfileSkeleton from '@/components/ProfileSkeleton';
 import type { User, Business } from '@/types/user';
+import Link from 'next/link';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<User | null>(null);
@@ -19,7 +20,6 @@ export default function ProfilePage() {
       const data = await res.json();
       if (res.ok) {
         setProfile(data.users);
-        setBusiness(data.business);
       }
       setLoading(false);
     };
@@ -27,16 +27,14 @@ export default function ProfilePage() {
   }, []);
 
   const updateField = (fullKey: string, value: string) => {
-    const [scope, field] = fullKey.split('.') as ['profile' | 'business', keyof User | keyof Business];
+    const [scope, field] = fullKey.split('.') as ['profile', keyof User];
     if (scope === 'profile' && profile) {
       setProfile({ ...profile, [field]: value });
-    } else if (scope === 'business' && business) {
-      setBusiness({ ...business, [field]: value });
     }
   };
 
   const saveChanges = async () => {
-    const body = { ...profile, ...business };
+    const body = { ...profile };
     try {
       const res = await fetch('/api/user/profile/update', {
         method: 'PUT',
@@ -60,7 +58,7 @@ export default function ProfilePage() {
     )
   }
 
-  if (!profile || !business) {
+  if (!profile) {
     return <p className="text-center mt-10 text-error">Please check your email to verify your account. Check spam, too.
       <br /> If you do not see anything, please reach out to Simpler Salon.</p>;
   }
@@ -79,40 +77,40 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <EditableCard
-          title="Your Details"
-          fields={[
-            { label: 'Tier', fieldKey: 'profile.tier', value: profile.tier, editable: false },
-            { label: 'First Name', fieldKey: 'profile.first_name', value: profile.first_name, editable: false },
-            { label: 'Last Name', fieldKey: 'profile.last_name', value: profile.last_name },
-            { label: 'Phone', fieldKey: 'profile.phone', value: profile.phone, editable: false },
-            { label: 'Email', fieldKey: 'profile.email', value: profile.email, editable: false },
-          ]}
-          editingField={editing}
-          setEditingField={setEditing}
-          updateField={updateField}
-          onSave={saveChanges}
-        />
+      {/* Tier card */}
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        <div className="self-start rounded-xl bg-base-200 p-6 shadow space-y-4 text-base-content">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Tier</h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-bold tracking-widest text-secondary">{profile.tier.toUpperCase()}</span>
+            <Link
+              href="/dashboard/upgrade"
+              className="rounded-md px-3 py-1 transition border border-neutral-content bg-base-100 text-secondary"
+            >
+              Upgrade
+            </Link>
+          </div>
+        </div>
 
-        <EditableCard
-          title="Your Business Details"
-          fields={[
-            { label: 'Business Name', fieldKey: 'business.name', value: business.name },
-            { label: 'Street', fieldKey: 'business.street', value: business.street },
-            { label: 'City', fieldKey: 'business.city', value: business.city },
-            { label: 'State', fieldKey: 'business.state', value: business.state },
-            { label: 'Zip', fieldKey: 'business.zip', value: business.zip },
-            { label: 'Phone', fieldKey: 'business.phone', value: business.phone },
-            { label: 'Email', fieldKey: 'business.email', value: business.email },
-            { label: 'Custom Domain', fieldKey: 'business.custom_domain', value: business.custom_domain },
-          ]}
-          editingField={editing}
-          setEditingField={setEditing}
-          updateField={updateField}
-          onSave={saveChanges}
-        />
+        <div className="md:col-span-1">
+          <EditableCard
+            title="Your Details"
+            fields={[
+              { label: 'First Name', fieldKey: 'profile.first_name', value: profile.first_name, editable: true },
+              { label: 'Last Name', fieldKey: 'profile.last_name', value: profile.last_name },
+              { label: 'Phone', fieldKey: 'profile.phone', value: profile.phone, editable: false },
+              { label: 'Email', fieldKey: 'profile.email', value: profile.email, editable: false },
+            ]}
+            editingField={editing}
+            setEditingField={setEditing}
+            updateField={updateField}
+            onSave={saveChanges}
+          />
+        </div>
       </div>
+
     </main>
   );
 }

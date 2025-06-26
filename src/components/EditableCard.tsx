@@ -4,11 +4,12 @@ import EditableField from '@/components/EditableField';
 
 interface EditableCardProps {
   title: string;
+  footer?: React.ReactNode,
   fields: {
     label: string;
     fieldKey: string;
     value: string | undefined;
-    editable?: boolean;
+    editable?: boolean,
   }[];
   editingField: string | null;
   setEditingField: (field: string | null) => void;
@@ -23,6 +24,7 @@ export default function EditableCard({
   setEditingField,
   updateField,
   onSave,
+  footer,
 }: EditableCardProps) {
   return (
     <section className="bg-base-200 p-6 rounded-xl shadow-md space-y-4">
@@ -45,6 +47,7 @@ export default function EditableCard({
             showEdit={editable}
           />
         ))}
+        {footer && <div className='border-accent bg-accent rounded-xl'>{footer}</div>}
       </div>
     </section>
   );

@@ -10,9 +10,11 @@ export async function POST(req: NextRequest) {
   const { email } = await req.json();
 
   const priceMap: Record<string, string> = {
+    // Test prices
     starter: 'price_1RcmOgK0jCwtzXAU6ajrujTW',
     essentials: 'price_1RcmPNK0jCwtzXAUVDT29uVz',
     ultimate: 'price_1RcmQqK0jCwtzXAUWYqnYDxp',
+    // Real prices
     // starter: 'price_1RcXJ7K0jCwtzXAUS6z3fM2p',
     // essentials: 'price_1RcXJMK0jCwtzXAUAKz2D3LD',
     // ultimate: 'price_1RcXJZK0jCwtzXAUxF5o3f45',

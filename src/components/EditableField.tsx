@@ -24,7 +24,7 @@ export default function EditableField({
   return (
     <div className="flex flex-col gap-1">
       {/* label */}
-      <span className="text-xs text-gray-400">{label}</span>
+      <span className="text-xs text-base-content/60">{label}</span>
 
       {isEditing ? (
         <input
