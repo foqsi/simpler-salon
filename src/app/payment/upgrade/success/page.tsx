@@ -2,35 +2,35 @@
 
 import { useEffect, useState } from 'react';
 
-export default function PaymentSuccessPage() {
+export default function UpgradeSuccessPage() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get('session_id');
+    const verifyUpgrade = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
 
-    if (!sessionId) {
-      setMessage('Missing session ID. Please contact support.');
-      setLoading(false);
-      return;
-    }
+      if (!sessionId) {
+        setMessage('Missing session ID. Please contact support.');
+        setLoading(false);
+        return;
+      }
 
-    const verifyPayment = async () => {
       try {
-        const res = await fetch('/api/stripe/verify', {
+        const res = await fetch('/api/stripe/verify-upgrade', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId }),
         });
 
-        if (!res.ok) throw new Error('Payment verification failed.');
+        if (!res.ok) throw new Error('Upgrade verification failed.');
 
         const { success, tier } = await res.json();
         if (success) {
-          setMessage(`Payment confirmed! Your ${tier} plan is now active.`);
+          setMessage(`🎉 Your upgrade to the ${tier} plan was successful.`);
         } else {
-          setMessage('Payment succeeded but we couldn’t update your account. Please contact support.');
+          setMessage('Payment succeeded, but your account was not updated. Please contact support.');
         }
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -43,15 +43,15 @@ export default function PaymentSuccessPage() {
       }
     };
 
-    verifyPayment();
+    verifyUpgrade();
   }, []);
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-base-100 text-base-content px-4">
       <div className="bg-base-200 p-8 rounded-xl shadow-lg text-center max-w-lg">
-        <h1 className="text-2xl font-bold mb-4">🎉 Payment Successful</h1>
+        <h1 className="text-2xl font-bold mb-4">✅ Upgrade Complete</h1>
         {loading ? (
-          <p className="text-sm text-base-content/70">Verifying your payment...</p>
+          <p className="text-sm text-base-content/70">Verifying your upgrade...</p>
         ) : (
           <p className="text-sm text-base-content/80">{message}</p>
         )}
