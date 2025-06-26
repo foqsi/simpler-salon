@@ -9,6 +9,7 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
+    const isUpgrade = params.get('upgrade') === 'true';
 
     if (!sessionId) {
       setMessage('Missing session ID. Please contact support.');
@@ -18,7 +19,7 @@ export default function PaymentSuccessPage() {
 
     const verifyPayment = async () => {
       try {
-        const res = await fetch('/api/stripe/verify', {
+        const res = await fetch(isUpgrade ? '/api/stripe/verify-upgrade' : '/api/stripe/verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId }),

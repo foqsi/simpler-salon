@@ -1,4 +1,3 @@
-// /app/api/user/update-tier-by-business/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import supabaseAdmin from '@/lib/supabaseAdmin';
 
