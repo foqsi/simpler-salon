@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import EditableCard from '@/components/EditableCard';
 import { PenLine } from 'lucide-react';
 import ProfileSkeleton from '@/components/ProfileSkeleton';
-import type { User, Business } from '@/types/user';
+import type { User } from '@/types/user';
 import Link from 'next/link';
 
 export default function ProfilePage() {
