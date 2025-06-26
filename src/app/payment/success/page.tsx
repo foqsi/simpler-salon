@@ -25,6 +25,9 @@ export default function PaymentSuccessPage() {
           body: JSON.stringify({ sessionId }),
         });
 
+        if (isUpgrade) {
+          console.log('upgrade')
+        }
         if (!res.ok) throw new Error('Payment verification failed.');
 
         const { success, tier } = await res.json();
