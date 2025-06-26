@@ -10,7 +10,6 @@ import Link from 'next/link';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<User | null>(null);
-  const [business, setBusiness] = useState<Business | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
