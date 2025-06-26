@@ -27,6 +27,8 @@ export default function PaymentSuccessPage() {
 
         if (isUpgrade) {
           console.log('upgrade')
+        } else {
+          console.log('not upgrade')
         }
         if (!res.ok) throw new Error('Payment verification failed.');
 
