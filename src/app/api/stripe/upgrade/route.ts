@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
     payment_method_types: ['card'],
     customer_email: user.email,
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}&upgrade=${newTier}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/upgrade`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/upgrade/success?session_id={CHECKOUT_SESSION_ID}&upgrade=${newTier}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/upgrade/cancelled`,
     metadata: {
       user_id: user.id,
       business_id: user.business_id || '',

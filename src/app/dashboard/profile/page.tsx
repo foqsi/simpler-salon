@@ -78,7 +78,7 @@ export default function ProfilePage() {
 
       {/* Tier card */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-        <div className="self-start rounded-xl bg-base-200 p-6 shadow space-y-4 text-base-content">
+        <div className="self-start rounded-xl bg-base-300 p-6 shadow space-y-4 text-base-content">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Tier</h3>
           </div>

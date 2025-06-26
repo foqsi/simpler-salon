@@ -40,7 +40,7 @@ export default function EditableField({
           type="button"
           disabled={!showEdit}
           onClick={showEdit ? onEdit : undefined}
-          className={`relative w-full text-left py-1 px-2 rounded transition ${showEdit ? 'hover:bg-base-300 focus:bg-base-300' : ''
+          className={`bg-base-100 relative w-full text-left py-1 px-2 rounded transition ${showEdit ? 'hover:bg-base-300 focus:bg-base-300' : ''
             }`}
         >
           {/* content */}

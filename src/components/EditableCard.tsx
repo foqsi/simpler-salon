@@ -27,7 +27,7 @@ export default function EditableCard({
   footer,
 }: EditableCardProps) {
   return (
-    <section className="bg-base-200 p-6 rounded-xl shadow-md space-y-4">
+    <section className="bg-base-300 p-6 rounded-xl shadow-md space-y-4">
       <h2 className="text-lg font-semibold text-base-content mb-2">{title}</h2>
       <div className="grid gap-4">
         {fields.map(({ label, fieldKey, value, editable = true }) => (

@@ -31,20 +31,8 @@ export async function GET() {
       return NextResponse.json({ error: userError.message }, { status: 500 });
     }
 
-    const { data: businessData, error: businessError } = await supabase
-      .from('business')
-      .select('name, street, city, state, email, zip, phone, custom_domain')
-      .eq('id', userData.business_id)
-      .single();
-
-    if (businessError) {
-      console.error('Error fetching business data:', businessError.message);
-      return NextResponse.json({ error: businessError.message }, { status: 500 });
-    }
-
     return NextResponse.json({
       users: userData,
-      business: businessData,
     });
   } catch (err) {
     console.error('Unhandled error:', err);
