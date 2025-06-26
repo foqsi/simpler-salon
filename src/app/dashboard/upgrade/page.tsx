@@ -60,9 +60,15 @@ const tiers = [
 ];
 
 const upgradePriceMap: Record<string, string> = {
-  'starter-essentials': 'price_1Rdyr5K0jCwtzXAUrfDVVaBC',
-  'starter-ultimate': 'price_1RdysNK0jCwtzXAUMDdAkNli',
-  'essentials-ultimate': 'price_1RdysiK0jCwtzXAUjLItBJqS',
+  // TEST
+  'starter-essentials': 'price_1Re6LDK0jCwtzXAUCxSuzCmc',
+  'starter-ultimate': 'price_1Re6MWK0jCwtzXAUBkgGAALQ',
+  'essentials-ultimate': 'price_1Re6MlK0jCwtzXAUKc0zug6Z',
+  // END TEST
+
+  // 'starter-essentials': 'price_1Rdyr5K0jCwtzXAUrfDVVaBC',
+  // 'starter-ultimate': 'price_1RdysNK0jCwtzXAUMDdAkNli',
+  // 'essentials-ultimate': 'price_1RdysiK0jCwtzXAUjLItBJqS',
 
   // Full-price entries for free tier
   'free-starter': 'price_1RcmOgK0jCwtzXAU6ajrujTW',
@@ -91,25 +97,24 @@ export default function UpgradePage() {
   const handleUpgrade = async (from: string, to: string) => {
     const key = `${from.toLowerCase()}-${to.toLowerCase()}`;
     const priceId = upgradePriceMap[key];
+    const email = profile?.email;
 
-    if (!priceId) {
-      console.error(`Upgrade price not found for path: "${key}"`);
+    if (!priceId || !email) {
+      console.error(`Missing upgrade path or email: "${key}"`);
       return toast.error('Upgrade path not available.');
     }
 
     const res = await fetch('/api/stripe/upgrade', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId, newTier: to }),
+      body: JSON.stringify({ priceId, newTier: to, email }),
     });
 
     const data = await res.json();
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      toast.error('Could not start checkout session.');
-    }
+    if (data.url) window.location.href = data.url;
+    else toast.error('Could not start checkout session.');
   };
+
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (!profile) return <div className="text-center py-10 text-error">Profile not found.</div>;

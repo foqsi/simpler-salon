@@ -7,45 +7,33 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function POST(req: NextRequest) {
-  const { priceId, newTier } = await req.json();
+  const { priceId, newTier, email } = await req.json();
 
-  // Replace with your preferred method of user identification
-  const token = req.cookies.get('sb-access-token')?.value;
-  if (!token) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  if (!priceId || !newTier || !email) {
+    return NextResponse.json({ error: 'Missing required data' }, { status: 400 });
   }
 
-  // Get user from Supabase using access token
-  const {
-    data: { user },
-    error,
-  } = await supabaseAdmin.auth.getUser(token);
+  // Look up user from Supabase by email
+  const { data: user, error } = await supabaseAdmin
+    .from('users')
+    .select('id, email, business_id')
+    .eq('email', email)
+    .single();
 
   if (error || !user) {
     return NextResponse.json({ error: 'User not found' }, { status: 401 });
   }
 
-  // Fetch user's business_id (optional if you want to store it)
-  const { data: userData } = await supabaseAdmin
-    .from('users')
-    .select('email, business_id')
-    .eq('id', user.id)
-    .single();
-
-  if (!userData?.email) {
-    return NextResponse.json({ error: 'User email not found' }, { status: 400 });
-  }
-
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     payment_method_types: ['card'],
-    customer_email: userData.email,
+    customer_email: user.email,
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}&upgrade=${newTier}`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/upgrade`,
     metadata: {
       user_id: user.id,
-      business_id: userData.business_id || '',
+      business_id: user.business_id || '',
       newTier,
       upgrade: 'true',
     },
