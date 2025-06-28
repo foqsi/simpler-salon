@@ -1,17 +1,14 @@
 import { getTenantBySlug } from '@/lib/tenants';
+import { notFound } from 'next/navigation';
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
+interface PageProps {
+  params: { slug: string };
+}
 
-export default async function TenantSite({ params }: Props) {
+export default async function TenantSite({ params }: PageProps) {
   const tenant = await getTenantBySlug(params.slug);
 
-  if (!tenant) {
-    return <div>404 Not Found</div>;
-  }
+  if (!tenant) return notFound();
 
   return (
     <div>
