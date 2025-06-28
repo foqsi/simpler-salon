@@ -94,9 +94,14 @@ export default function RegisterPage() {
 
       setShowModal(true);
       setTimeout(() => router.push('/login'), 10000);
-    } catch (err: any) {
-      console.error(err);
-      toast.error('Something went wrong.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+        toast.error(err.message);
+      } else {
+        console.error(err);
+        toast.error('Something went wrong.');
+      }
     } finally {
       setLoading(false);
     }

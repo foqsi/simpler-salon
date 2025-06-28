@@ -39,6 +39,7 @@ export default function ProfilePage() {
           setBusiness(businessData);
         }
       } catch (err) {
+        console.error(err);
         toast.error('Failed to load profile or business data.');
       } finally {
         setLoading(false);

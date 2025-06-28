@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { User } from '@/types/user';
+import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import clsx from 'clsx';
 
@@ -191,7 +191,7 @@ export default function UpgradePage() {
                   Upgrade for ${upgradeAmount}
                 </button>
               ) : t.id === 'custom' ? (
-                <a href="/contact" className="btn btn-primary w-full mb-6">Contact Us</a>
+                <Link href="/contact" className="btn btn-primary w-full mb-6">Contact Us</Link>
               ) : (
                 <div className="mb-6 h-[2.5rem]" />
               )}

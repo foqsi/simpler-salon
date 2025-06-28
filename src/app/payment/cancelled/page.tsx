@@ -1,4 +1,5 @@
-// app/payment/cancelled/page.tsx
+import Link from 'next/link';
+
 export default function PaymentCancelledPage() {
   return (
     <main className="flex items-center justify-center min-h-screen bg-base-100 text-base-content px-4">
@@ -7,9 +8,9 @@ export default function PaymentCancelledPage() {
         <p className="text-sm text-base-content/80 mb-4">
           No payment was made. You can try again anytime from your account dashboard or pricing page.
         </p>
-        <a href="/dashboard" className="btn btn-primary">
+        <Link href="/dashboard" className="btn btn-primary">
           Return to Dashboard
-        </a>
+        </Link>
       </div>
     </main>
   );

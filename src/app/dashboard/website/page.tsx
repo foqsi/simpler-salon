@@ -32,6 +32,7 @@ export default function HomePageEditor() {
         const data = await res.json();
         setFormData(data);
       } catch (err) {
+        console.error(err);
         toast.error('Failed to load homepage data');
       } finally {
         setLoading(false);

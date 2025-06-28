@@ -2,6 +2,7 @@
 
 import ParticlesBackground from '@/components/ParticlesBackground';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function Hero() {
   const phrases = [
@@ -60,9 +61,9 @@ export default function Hero() {
             Launch a modern, responsive site for your salon or small business. No subscriptions, just full ownership.
           </p>
           <div className="pt-4">
-            <a href="/register" className="btn btn-primary px-6">
+            <Link href="/register" className="btn btn-primary px-6">
               Get Started
-            </a>
+            </Link>
           </div>
         </div>
 

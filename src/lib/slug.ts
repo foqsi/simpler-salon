@@ -18,6 +18,10 @@ export async function getUniqueSlug(baseName: string): Promise<string> {
 
     if (!data) break;
 
+    if (error) {
+      console.error(error);
+    }
+
     slug = `${baseSlug}-${i++}`;
   }
 

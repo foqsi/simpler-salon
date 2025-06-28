@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import supabase from '@/lib/supabaseBrowserClient';
-import { toast } from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();

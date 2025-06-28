@@ -19,7 +19,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [profile, setProfile] = useState<User | null>(null);
-  const [business, setBusiness] = useState<Business | null>(null);
+  // const [business, setBusiness] = useState<Business | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,11 +28,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (res.ok && data.users) {
         setProfile(data.users);
 
-        const businessRes = await fetch(`/api/business/get?id=${data.users.business_id}`, { credentials: 'include' });
-        const businessData = await businessRes.json();
-        if (businessRes.ok) {
-          setBusiness(businessData);
-        }
+        // const businessRes = await fetch(`/api/business/get?id=${data.users.business_id}`, { credentials: 'include' });
+        // const businessData = await businessRes.json();
+        // if (businessRes.ok) {
+        //   setBusiness(businessData);
+        // }
       }
     };
 
