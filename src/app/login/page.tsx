@@ -57,9 +57,12 @@ export default function LoginPage() {
       } else {
         router.push('/dashboard');
       }
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }

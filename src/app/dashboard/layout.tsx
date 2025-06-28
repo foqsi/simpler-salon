@@ -7,13 +7,13 @@ import type { User } from '@/types/user';
 import { X, Eye } from 'lucide-react';
 import Preview from './components/Preview';
 
-interface Business {
-  id: string;
-  name: string;
-  slug: string;
-  tier: string;
-  pending_tier?: string;
-}
+// interface Business {
+//   id: string;
+//   name: string;
+//   slug: string;
+//   tier: string;
+//   pending_tier?: string;
+// }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);

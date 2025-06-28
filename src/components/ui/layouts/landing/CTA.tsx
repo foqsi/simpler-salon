@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 export default function CTASection() {
   return (
     <section className="bg-primary text-primary-content text-center px-4 py-16">
@@ -10,9 +12,9 @@ export default function CTASection() {
         <p className="text-base md:text-lg">
           Skip the monthly fees. Get a beautiful, editable site for your business — forever.
         </p>
-        <a href="/register" className="btn bg-primary-content text-primary rounded-md hover:opacity-90">
+        <Link href="/register" className="btn bg-primary-content text-primary rounded-md hover:opacity-90">
           Get Started Today
-        </a>
+        </Link>
         <p className="text-sm opacity-80">
           No subscriptions. No hidden costs. One-time payment.
         </p>
