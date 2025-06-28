@@ -56,40 +56,50 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.toLowerCase(),
+        password,
+      });
 
-    if (error || !data.user) {
-      toast.error(error?.message || 'Error creating account');
+      if (error || !data.user) {
+        toast.error(error?.message || 'Error creating account');
+        setLoading(false);
+        return;
+      }
+
+      const user = data.user;
+
+      const res = await fetch('/api/sign-up/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          user_id: user.id,
+          first_name: firstName,
+          last_name: lastName,
+          business_name: businessName,
+          tier: tier === 'free' ? 'free' : 'pending',
+          pending_tier: tier !== 'free' ? tier : null,
+        }),
+      });
+
+      const responseJson = await res.json();
+
+      if (!res.ok) {
+        toast.error(responseJson?.error || 'Signup failed');
+        setLoading(false);
+        return;
+      }
+
+      setShowModal(true);
+      setTimeout(() => router.push('/login'), 10000);
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Something went wrong.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const user = data.user;
-
-    const res = await fetch('/api/sign-up/user', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        user_id: user.id,
-        first_name: firstName,
-        last_name: lastName,
-        business_name: businessName,
-        tier: tier === 'free' ? 'free' : 'pending',
-        pending_tier: tier !== 'free' ? tier : null,
-      }),
-    });
-
-    if (!res.ok) {
-      const { error } = await res.json();
-      toast.error(error || 'Signup failed');
-      setLoading(false);
-      return;
-    }
-
-    setLoading(false);
-    setShowModal(true);
-    setTimeout(() => router.push('/login'), 10000);
   };
 
   return (

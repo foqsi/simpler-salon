@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import supabase from '@/lib/supabaseBrowserClient'; // ✅ uses auth-helpers, handles cookies
+import supabase from '@/lib/supabaseBrowserClient';
+import { toast } from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,36 +21,48 @@ export default function LoginPage() {
     setLoading(true);
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    setLoading(false);
-
     if (error) {
       setLoading(false);
       setErrorMsg(error.message || 'Login failed');
       return;
     }
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const userId = sessionData.session?.user?.id;
+    try {
+      const profileRes = await fetch('/api/user/profile/get', {
+        method: 'GET',
+        credentials: 'include',
+      });
 
-    if (!userId) {
-      setErrorMsg('Login failed: user ID not found');
-      return;
-    }
+      if (!profileRes.ok) {
+        throw new Error('Failed to fetch user profile');
+      }
 
-    // fetch user profile from your DB (not Supabase Auth)
-    const userRes = await fetch('/api/user/profile/get', {
-      method: 'GET',
-      credentials: 'include',
-    });
+      const { users: user } = await profileRes.json();
 
-    const { users: user } = await userRes.json();
+      if (!user?.business_id) {
+        throw new Error('Missing business ID');
+      }
 
-    if (user.tier === 'pending') {
-      setLoading(true);
-      setTimeout(() => router.push('/payment/pending'), 1000);
-    } else {
-      router.push('/dashboard');
+      const businessRes = await fetch(`/api/business/get?id=${user.business_id}`, {
+        credentials: 'include',
+      });
+
+      if (!businessRes.ok) {
+        throw new Error('Failed to fetch business information');
+      }
+
+      const business = await businessRes.json();
+
+      if (business?.tier === 'pending') {
+        setTimeout(() => router.push('/payment/pending'), 1000);
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 

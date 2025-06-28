@@ -77,27 +77,41 @@ const upgradePriceMap: Record<string, string> = {
 };
 
 export default function UpgradePage() {
-  const [profile, setProfile] = useState<User | null>(null);
+  const [email, setEmail] = useState('');
+  const [tier, setTier] = useState('');
+  const [pendingTier, setPendingTier] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const res = await fetch('/api/user/profile/get', { credentials: 'include' });
-      const data = await res.json();
-      if (res.ok) {
-        setProfile(data.users);
-      } else {
-        toast.error('Failed to load profile.');
+    const loadData = async () => {
+      try {
+        const res = await fetch('/api/user/profile/get', { credentials: 'include' });
+        const { users } = await res.json();
+        if (!res.ok || !users) throw new Error();
+
+        setEmail(users.email);
+
+        const businessRes = await fetch(`/api/business/get?id=${users.business_id}`, {
+          credentials: 'include',
+        });
+        const business = await businessRes.json();
+        if (!businessRes.ok) throw new Error();
+
+        setTier(business.tier);
+        setPendingTier(business.pending_tier || '');
+      } catch {
+        toast.error('Failed to load account info.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetchProfile();
+
+    loadData();
   }, []);
 
   const handleUpgrade = async (from: string, to: string) => {
     const key = `${from.toLowerCase()}-${to.toLowerCase()}`;
     const priceId = upgradePriceMap[key];
-    const email = profile?.email;
 
     if (!priceId || !email) {
       console.error(`Missing upgrade path or email: "${key}"`);
@@ -115,50 +129,54 @@ export default function UpgradePage() {
     else toast.error('Could not start checkout session.');
   };
 
-
   if (loading) return <div className="text-center py-10">Loading...</div>;
-  if (!profile) return <div className="text-center py-10 text-error">Profile not found.</div>;
+  if (!tier) return <div className="text-center py-10 text-error">No tier data available.</div>;
 
-  const currentTierIndex = tiers.findIndex(t => t.id === profile.tier);
-  const currentAmount = tiers.find(t => t.id === profile.tier)?.amount || 0;
+  const currentTierIndex = tiers.findIndex(t => t.id === tier);
+  const currentAmount = tiers.find(t => t.id === tier)?.amount || 0;
 
   return (
     <main className="bg-base-100 text-base-content px-4 py-20">
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h1 className="text-4xl font-bold mb-2">Upgrade Your Plan</h1>
         <p className="text-base-content/80 text-sm md:text-base">
-          Your current plan: <span className="text-secondary"><strong>{profile.tier.toUpperCase()}</strong></span>
+          Your current plan: <span className="text-secondary"><strong>{tier.toUpperCase()}</strong></span>
+          {pendingTier && pendingTier !== tier && (
+            <span className="ml-2 text-warning text-xs">
+              (Pending upgrade to <strong>{pendingTier.toUpperCase()}</strong>)
+            </span>
+          )}
         </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 max-w-7xl mx-auto">
-        {tiers.map((tier, i) => {
-          const isCurrent = tier.id === profile.tier;
+        {tiers.map((t, i) => {
+          const isCurrent = t.id === tier;
           const isDowngrade = i < currentTierIndex;
-          const upgradeAmount = tier.amount - currentAmount;
-          const canUpgrade = upgradeAmount > 0 && !isDowngrade && tier.id !== 'custom';
+          const upgradeAmount = t.amount - currentAmount;
+          const canUpgrade = upgradeAmount > 0 && !isDowngrade && t.id !== 'custom';
 
           return (
             <div
-              key={tier.id}
+              key={t.id}
               className={clsx(
                 'relative flex flex-col border rounded-xl shadow-sm p-6 text-left',
-                tier.color && `border-${tier.color}`,
+                t.color && `border-${t.color}`,
                 isCurrent ? 'bg-base-100' : 'bg-base-200 text-base-content opacity-100',
                 isDowngrade && 'opacity-50 pointer-events-none'
               )}
             >
-              {tier.badge && (
-                <div className={`absolute top-4 right-4 badge badge-${tier.color} badge-lg`}>
-                  {tier.badge}
+              {t.badge && (
+                <div className={`absolute top-4 right-4 badge badge-${t.color} badge-lg`}>
+                  {t.badge}
                 </div>
               )}
 
-              <h2 className="text-xl font-semibold mb-1">{tier.title}</h2>
-              <p className="text-sm text-base-content/70 mb-4">{tier.subtitle}</p>
+              <h2 className="text-xl font-semibold mb-1">{t.title}</h2>
+              <p className="text-sm text-base-content/70 mb-4">{t.subtitle}</p>
 
-              {tier.price.trim() ? (
-                <p className="text-3xl font-bold mb-3">{tier.price}</p>
+              {t.price.trim() ? (
+                <p className="text-3xl font-bold mb-3">{t.price}</p>
               ) : (
                 <div className="h-12" />
               )}
@@ -167,12 +185,12 @@ export default function UpgradePage() {
                 <div className="btn btn-disabled mb-6">Current Plan</div>
               ) : canUpgrade ? (
                 <button
-                  onClick={() => handleUpgrade(profile.tier, tier.id)}
-                  className={`btn btn-${tier.btnColor} w-full mb-6`}
+                  onClick={() => handleUpgrade(tier, t.id)}
+                  className={`btn btn-${t.btnColor} w-full mb-6`}
                 >
                   Upgrade for ${upgradeAmount}
                 </button>
-              ) : tier.id === 'custom' ? (
+              ) : t.id === 'custom' ? (
                 <a href="/contact" className="btn btn-primary w-full mb-6">Contact Us</a>
               ) : (
                 <div className="mb-6 h-[2.5rem]" />
@@ -181,7 +199,7 @@ export default function UpgradePage() {
               <hr className="mb-4 border-base-300" />
 
               <ul className="mt-2 space-y-3 text-sm">
-                {tier.features.map((f, idx) => (
+                {t.features.map((f, idx) => (
                   <li key={idx} className="flex gap-2 items-start">
                     <span className="text-success">✔</span>
                     <span>{f}</span>

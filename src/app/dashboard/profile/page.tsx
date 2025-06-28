@@ -8,20 +8,43 @@ import ProfileSkeleton from '@/components/ProfileSkeleton';
 import type { User } from '@/types/user';
 import Link from 'next/link';
 
+type Business = {
+  tier: string;
+  pending_tier?: string;
+};
+
 export default function ProfilePage() {
   const [profile, setProfile] = useState<User | null>(null);
+  const [business, setBusiness] = useState<Business | null>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await fetch('/api/user/profile/get', { credentials: 'include' });
-      const data = await res.json();
-      if (res.ok) {
+      try {
+        const res = await fetch('/api/user/profile/get', { credentials: 'include' });
+        const data = await res.json();
+
+        if (!res.ok || !data.users) throw new Error();
+
         setProfile(data.users);
+
+        // Fetch associated business by business_id
+        const businessRes = await fetch(`/api/business/get?id=${data.users.business_id}`, {
+          credentials: 'include',
+        });
+
+        const businessData = await businessRes.json();
+        if (businessRes.ok) {
+          setBusiness(businessData);
+        }
+      } catch (err) {
+        toast.error('Failed to load profile or business data.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
+
     fetchProfile();
   }, []);
 
@@ -33,14 +56,14 @@ export default function ProfilePage() {
   };
 
   const saveChanges = async () => {
-    const body = { ...profile };
     try {
       const res = await fetch('/api/user/profile/update', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(body),
+        body: JSON.stringify(profile),
       });
+
       if (res.ok) {
         toast.success('Changes saved.');
       } else {
@@ -51,15 +74,15 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) {
-    return (
-      <ProfileSkeleton />
-    )
-  }
+  if (loading) return <ProfileSkeleton />;
 
   if (!profile) {
-    return <p className="text-center mt-10 text-error">Please check your email to verify your account. Check spam, too.
-      <br /> If you do not see anything, please reach out to Simpler Salon.</p>;
+    return (
+      <p className="text-center mt-10 text-error">
+        Please check your email to verify your account. Check spam, too.
+        <br /> If you do not see anything, please reach out to Simpler Salon.
+      </p>
+    );
   }
 
   return (
@@ -77,13 +100,23 @@ export default function ProfilePage() {
       </div>
 
       {/* Tier card */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="self-start rounded-xl bg-base-300 p-6 shadow space-y-4 text-base-content">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">Tier</h3>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold tracking-widest text-secondary">{profile.tier.toUpperCase()}</span>
+            <div>
+              <p className="text-2xl font-bold tracking-widest text-secondary">
+                {business?.tier ? business.tier.toUpperCase() : 'Unknown'}
+              </p>
+              {business?.pending_tier && business.pending_tier !== business.tier && (
+                <p className="text-xs text-warning mt-1">
+                  Pending upgrade to{' '}
+                  <strong>{business.pending_tier.toUpperCase()}</strong>
+                </p>
+              )}
+            </div>
             <Link
               href="/dashboard/upgrade"
               className="rounded-md px-3 py-1 transition border border-neutral-content bg-base-100 text-secondary"
@@ -109,7 +142,6 @@ export default function ProfilePage() {
           />
         </div>
       </div>
-
     </main>
   );
 }

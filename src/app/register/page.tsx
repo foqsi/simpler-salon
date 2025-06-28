@@ -1,4 +1,3 @@
-// app/register/page.tsx or wherever this is used
 'use client';
 
 import { Suspense } from 'react';
