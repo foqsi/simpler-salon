@@ -1,6 +1,12 @@
 import { getTenantBySlug } from '@/lib/tenants';
 
-export default async function TenantSite({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function TenantSite({ params }: PageProps) {
   const tenant = await getTenantBySlug(params.slug);
 
   if (!tenant) {
