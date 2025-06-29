@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { error } = await supabaseAdmin
-      .from('users')
+      .from('business')
       .update({ tier: newTier, pending_tier: null })
       .eq('id', userId);
 
