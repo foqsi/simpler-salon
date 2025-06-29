@@ -98,10 +98,10 @@ As a new addition to the town, we take pride in offering a welcoming and relaxin
 Our mission is simple: to provide outstanding nail and spa services that combine quality, creativity, and comfort. Whether you're here for a quick touch-up, a luxurious spa treatment, or stunning nail art, our team is committed to exceeding your expectations.
 We believe in building lasting relationships with our clients by delivering personalized care and attention to detail. Every visit to My Company is an opportunity to relax, unwind, and leave feeling refreshed and confident.
 Thank you for welcoming us! We look forward to serving you and being a part of your self-care journey!`}
-            onChange={(e: { target: { value: string | string[]; }; }) => handleChange('about', e.target.value)} />
+            onChange={value => handleChange('about', value)} />
 
-          <TextArea label="Banner Text" value={formData.bannerText} placeholder={'New Loyalty Program - 20% off on 6th visit!\n20% for New Years!'} onChange={(e: { target: { value: string | string[]; }; }) => handleChange('bannerText', e.target.value)} />
-          <TextArea label="Business Hours" value={formData.businessHours} placeholder={'Monday - Friday: 10:00AM - 7:00PM \nSaturday: 12:00 PM - 6:00PM \nSunday: Closed'} onChange={(e: { target: { value: string | string[]; }; }) => handleChange('businessHours', e.target.value)} />
+          <TextArea label="Banner Text" value={formData.bannerText} placeholder={'New Loyalty Program - 20% off on 6th visit!\n20% for New Years!'} onChange={value => handleChange('bannerText', value)} />
+          <TextArea label="Business Hours" value={formData.businessHours} placeholder={'Monday - Friday: 10:00AM - 7:00PM \nSaturday: 12:00 PM - 6:00PM \nSunday: Closed'} onChange={value => handleChange('businessHours', value)} />
 
 
           <Button onClick={handleSubmit} className="mt-4 w-full">
