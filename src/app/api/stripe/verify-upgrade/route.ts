@@ -23,13 +23,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Missing metadata' }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    const { data: userData, error: userError } = await supabaseAdmin
+      .from('users')
+      .select('business_id, role')
+      .eq('id', userId)
+      .single();
+
+    if (userError || !userData?.business_id) {
+      console.error('User lookup error:', userError?.message);
+      return NextResponse.json({ success: false, error: 'User or business not found' }, { status: 404 });
+    }
+
+    if (userData.role !== 'admin') {
+      return NextResponse.json({ success: false, error: 'Only admins can upgrade' }, { status: 403 });
+    }
+
+    const { error: updateError } = await supabaseAdmin
       .from('business')
       .update({ tier: newTier, pending_tier: null })
-      .eq('id', userId);
+      .eq('id', userData.business_id);
 
-    if (error) {
-      console.error('Supabase update error:', error.message);
+    if (updateError) {
+      console.error('Supabase update error:', updateError.message);
       return NextResponse.json({ success: false, error: 'Failed to update tier' }, { status: 500 });
     }
 
