@@ -4,8 +4,13 @@ import { useState } from 'react';
 
 interface ImageUploaderProps {
   label: string;
-  onUpload: (file: File) => void;
+  imageUrl?: string;
+  imageUrls?: string[];
+  multiple?: boolean;
+  onUpload: (file: File) => void; // ✅ Fixed
 }
+
+
 
 export default function ImageUploader({ label, onUpload }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(null);

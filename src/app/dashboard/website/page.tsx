@@ -76,14 +76,20 @@ export default function HomePageEditor() {
           <ImageUploader
             label="Company Logo"
             imageUrl={formData.logoUrl}
-            onUpload={(url: string | string[]) => handleChange('logoUrl', url)}
+            onUpload={async (file: File) => {
+              const url = URL.createObjectURL(file); // or upload and get back a real URL
+              handleChange('logoUrl', url);
+            }}
           />
 
           <ImageUploader
             label="Banner Images (you can upload multiple)"
             multiple
             imageUrls={formData.bannerImages}
-            onUpload={(urls: string | string[]) => handleChange('bannerImages', urls)}
+            onUpload={async (file: File) => {
+              const url = URL.createObjectURL(file);
+              handleChange('bannerImages', url);
+            }}
           />
 
           <TextArea label="About Section" value={formData.about}
