@@ -17,15 +17,20 @@ export interface Metrics {
   tier: string;
 }
 
-export interface HomePageData {
+export type HomePageData = {
   companyName: string;
   slogan: string;
-  bannerText: string;
+  phone: string;
+  location: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  CTA: string;
   logoUrl: string;
   bannerImages: string[];
   about: string;
-  phone: string;
-  location: string;
+  bannerText: string;
   businessHours: string;
-  CTA: string;
-}
+};
