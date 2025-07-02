@@ -1,9 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Database } from '@/types/supabase';
 
-export async function GET({ params }: { params: { slug: string } }) {
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: { slug: string } }) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const { slug } = params;
