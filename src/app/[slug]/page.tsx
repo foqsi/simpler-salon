@@ -4,9 +4,9 @@ import { cookies } from 'next/headers';
 import type { Database } from '@/types/supabase';
 
 interface SlugPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function SlugPage({ params }: SlugPageProps) {
@@ -15,7 +15,7 @@ export default async function SlugPage({ params }: SlugPageProps) {
   const { data, error } = await supabase
     .from('business')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', (await params).slug)
     .single();
 
   if (!data || error) return notFound();
