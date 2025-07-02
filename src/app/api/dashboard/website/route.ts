@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import type { Database } from '@/types/supabase'; // adjust path if needed
+import type { Database } from '@/types/supabase';
 
 export async function GET() {
   const supabase = createRouteHandlerClient<Database>({ cookies });
