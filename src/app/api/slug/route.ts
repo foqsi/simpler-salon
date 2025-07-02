@@ -3,12 +3,9 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Database } from '@/types/supabase';
 
-export async function GET(
-  _req: NextRequest,
-  context: { params: { slug: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const supabase = createRouteHandlerClient<Database>({ cookies });
-
-  const { slug } = context.params;
 
   const { data, error } = await supabase
     .from('business')
