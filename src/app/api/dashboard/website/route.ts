@@ -3,7 +3,7 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Database } from '@/types/supabase'; // adjust path if needed
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const {
@@ -44,7 +44,6 @@ export async function GET(req: NextRequest) {
     businessHours: b?.business_hours ?? '',
     CTA: 'Book Now',
   });
-
 }
 
 export async function PUT(req: NextRequest) {
