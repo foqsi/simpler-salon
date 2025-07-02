@@ -3,7 +3,13 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import type { Database } from '@/types/supabase';
 
-export default async function SlugPage({ params }: { params: { slug: string } }) {
+interface SlugPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function SlugPage({ params }: SlugPageProps) {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const { data, error } = await supabase
