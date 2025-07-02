@@ -5,10 +5,10 @@ import type { Database } from '@/types/supabase';
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } }) {
+  context: { params: { slug: string } }) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
-  const { slug } = params;
+  const { slug } = context.params;
 
   const { data, error } = await supabase
     .from('business')
