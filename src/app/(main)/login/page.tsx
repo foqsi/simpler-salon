@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [hasOnboarded, setHasOnboarded] = useState(false);
 
   const handleLogin = async () => {
     setErrorMsg('');
@@ -41,6 +40,11 @@ export default function LoginPage() {
 
       if (!user?.business_id) {
         throw new Error('Missing business ID');
+      }
+
+      if (user.role == 'admin' && !user.has_onboarded) {
+        router.push('/dashboard/onboarding');
+        return;
       }
 
       const businessRes = await fetch(`/api/business/get?id=${user.business_id}`, {

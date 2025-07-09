@@ -10,4 +10,5 @@ export interface User {
   role: UserRole;
   business_id: string;
   created_at?: string;
+  has_onboarded: boolean;
 }

@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 
 const MAIN_DOMAIN = 'simplersalon.com';
-const DEV_DOMAIN = 'localhost:3000';
+// const DEV_DOMAIN = 'localhost:3000';
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
