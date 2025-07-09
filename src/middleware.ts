@@ -12,7 +12,10 @@ export async function middleware(req: NextRequest) {
   const host = req.headers.get('host') || '';
   const url = req.nextUrl.clone();
 
-  // AUTH: Redirect unauthenticated users away from /dashboard
+  /**
+   * 🔒 Auth protection on /dashboard route (main domain)
+   * Example: simplersalon.com/dashboard → auth check
+   */
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -21,6 +24,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
+  //
+  //
+  //
   // DOMAIN HANDLING: Handle subdomain or custom domain rewrite
   const isLocalhost = host.includes('localhost');
   const isMainDomain = host.endsWith(MAIN_DOMAIN) || isLocalhost;
@@ -28,14 +34,31 @@ export async function middleware(req: NextRequest) {
   const parts = host.split('.');
   const subdomain = parts.length > 2 ? parts[0] : null;
 
+  const isDashboard = subdomain === 'dashboard' && isMainDomain;
   const isUsingSubdomain = !isLocalhost && subdomain && isMainDomain && subdomain !== 'www';
 
+  /**
+   * ✅ Dashboard subdomain rewrite
+   * Example: dashboard.simplersalon.com/profile → /dashboard-app/profile
+   */
+  if (isDashboard) {
+    url.pathname = `/dashboard-app${url.pathname}`;
+    return NextResponse.rewrite(url);
+  }
+
+  /**
+   * 🌐 Subdomain rewrite
+   * Example: james.simplersalon.com/about → /james/about
+   */
   if (isUsingSubdomain) {
     url.pathname = `/${subdomain}${url.pathname}`;
     return NextResponse.rewrite(url);
   }
 
-  // For custom domains, rewrite to `/[slug]`
+  /**
+   * 🌐 Custom domain rewrite
+   * Example: johnsalon.com/about → /johnsalon.com/about
+   */
   if (!isMainDomain && !isLocalhost) {
     const nakedDomain = host.replace(/^www\./, '');
     url.pathname = `/${nakedDomain}${url.pathname}`;
