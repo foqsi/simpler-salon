@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark">
+    <div>
       <body>
         <ClientWrapper>
           <ConditionalNavbar />
@@ -21,6 +21,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <Footer />
         </ClientWrapper>
       </body>
-    </html>
+    </div>
   );
 }

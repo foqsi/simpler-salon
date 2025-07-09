@@ -8,27 +8,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  const { data: bizData, error: bizError } = await supabaseAdmin
-    .from('business')
-    .insert({ name: business_name })
-    .select('id')
-    .single();
-
-  if (bizError) return NextResponse.json({ error: 'Business creation failed' }, { status: 500 });
-
   const validTiers = ['free', 'starter', 'essentials', 'ultimate', 'custom', 'pending'];
   const safeTier = validTiers.includes(tier) ? tier : 'pending';
   const safePendingTier = validTiers.includes(pending_tier) ? pending_tier : null;
+
+  const { data: bizData, error: bizError } = await supabaseAdmin
+    .from('business')
+    .insert({
+      name: business_name,
+      slug: business_name.toLowerCase().replace(/\s+/g, '-'),
+      tier: safeTier,
+      pending_tier: safePendingTier,
+    })
+    .select('id')
+    .single();
+
+  if (bizError) {
+    console.error('Business creation error:', bizError);
+    return NextResponse.json({ error: bizError.message }, { status: 500 });
+  }
 
   const { error: userError } = await supabaseAdmin
     .from('users')
     .insert({
       id: user_id,
-      email,
       first_name,
       last_name,
-      tier: safeTier,
-      pending_tier: safePendingTier,
+      email,
       business_id: bizData.id,
       role: 'admin',
     });

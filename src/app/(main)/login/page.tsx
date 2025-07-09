@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [hasOnboarded, setHasOnboarded] = useState(false);
 
   const handleLogin = async () => {
     setErrorMsg('');

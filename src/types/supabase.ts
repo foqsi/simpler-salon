@@ -22,6 +22,10 @@ export type Database = {
           business_hours: string;
           tier: string;
           pending_tier: string;
+          slug: string;
+          subdomain: string | null;
+          custom_domain: string | null;
+          domain_type: 'route' | 'subdomain' | 'custom';
         };
         Update: {
           name?: string;

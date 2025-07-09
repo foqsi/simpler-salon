@@ -6,9 +6,9 @@ import TextArea from '@/components/ui/TextArea';
 import Button from '@/components/ui/Button';
 import ImageUploader from '@/components/ui/ImageUploader';
 import toast from 'react-hot-toast';
-import { HomePageData } from '@/app/dashboard/types/index';
+import { HomePageData } from '@/app/(main)/dashboard/types/index';
 import LargeThrobber from '@/components/LargeThrobber';
-import Preview from '@/app/dashboard/components/Preview';
+import Preview from '@/app/(main)/dashboard/components/Preview';
 
 export default function WebsiteEditor() {
   const [formData, setFormData] = useState<HomePageData | null>(null);
