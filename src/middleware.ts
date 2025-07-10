@@ -41,9 +41,10 @@ export async function middleware(req: NextRequest) {
    * ✅ Dashboard subdomain rewrite
    * Example: dashboard.simplersalon.com/profile → /dashboard-app/profile
    */
-  if (isDashboard) {
-    url.pathname = `/dashboard${url.pathname}`;
-    return NextResponse.rewrite(url);
+  if (!isDashboard && url.pathname.startsWith('/dashboard')) {
+    // Remove "/dashboard" from the path for the subdomain
+    const newPath = url.pathname.replace(/^\/dashboard/, '') || '/';
+    return NextResponse.redirect(new URL(`https://dashboard.${MAIN_DOMAIN}${newPath}`));
   }
 
   /**
