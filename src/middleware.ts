@@ -42,7 +42,7 @@ export async function middleware(req: NextRequest) {
    * Example: dashboard.simplersalon.com/profile → /dashboard-app/profile
    */
   if (isDashboard) {
-    url.pathname = `/dashboard-app${url.pathname}`;
+    url.pathname = `/dashboard${url.pathname}`;
     return NextResponse.rewrite(url);
   }
 
