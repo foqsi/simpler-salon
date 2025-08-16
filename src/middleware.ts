@@ -37,15 +37,15 @@ export async function middleware(req: NextRequest) {
   const isDashboard = subdomain === 'dashboard' && isMainDomain;
   const isUsingSubdomain = !isLocalhost && subdomain && isMainDomain && subdomain !== 'www';
 
-  /**
+  /** TODO:
    * ✅ Dashboard subdomain rewrite
    * Example: dashboard.simplersalon.com/profile → /dashboard-app/profile
    */
-  if (!isDashboard && url.pathname.startsWith('/dashboard')) {
-    // Remove "/dashboard" from the path for the subdomain
-    const newPath = url.pathname.replace(/^\/dashboard/, '') || '/';
-    return NextResponse.redirect(new URL(`https://dashboard.${MAIN_DOMAIN}${newPath}`));
-  }
+  // if (!isDashboard && url.pathname.startsWith('/dashboard')) {
+  //   // Remove "/dashboard" from the path for the subdomain
+  //   const newPath = url.pathname.replace(/^\/dashboard/, '') || '/';
+  //   return NextResponse.redirect(new URL(`https://dashboard.${MAIN_DOMAIN}${newPath}`));
+  // }
 
   /**
    * 🌐 Subdomain rewrite

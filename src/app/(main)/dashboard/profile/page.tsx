@@ -133,7 +133,7 @@ export default function ProfilePage() {
             fields={[
               { label: 'First Name', fieldKey: 'profile.first_name', value: profile.first_name, editable: true },
               { label: 'Last Name', fieldKey: 'profile.last_name', value: profile.last_name },
-              { label: 'Phone', fieldKey: 'profile.phone', value: profile.phone, editable: false },
+              { label: 'Phone', fieldKey: 'profile.phone', value: profile.phone, editable: true },
               { label: 'Email', fieldKey: 'profile.email', value: profile.email, editable: false },
             ]}
             editingField={editing}

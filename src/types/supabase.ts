@@ -13,7 +13,7 @@ export type Database = {
           id: string;
           name: string;
           slogan: string;
-          banner_texts: string;
+          banner_text: string[];
           logo_url: string;
           banner_images: string[];
           about: string;
@@ -30,7 +30,7 @@ export type Database = {
         Update: {
           name?: string;
           slogan?: string;
-          banner_texts?: string;
+          banner_texts?: string[];
           logo_url?: string;
           banner_images?: string[];
           about?: string;

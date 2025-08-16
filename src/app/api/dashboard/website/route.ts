@@ -15,36 +15,42 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data, error } = await supabase
+  const { data: userData, error: userDataError } = await supabase
     .from('users')
-    .select('business_id, role, business:business_id(*)')
+    .select('business_id')
     .eq('id', user.id)
     .single();
 
-  if (error || !data?.business) {
+  if (userDataError || !userData?.business_id) {
     return NextResponse.json({ error: 'Business not found' }, { status: 404 });
   }
 
-  const b = Array.isArray(data.business) ? data.business[0] : data.business;
+  const { data: business, error: businessError } = await supabase
+    .from('business')
+    .select('*')
+    .eq('id', userData.business_id)
+    .single();
+
+  if (businessError || !business) {
+    return NextResponse.json({ error: 'Business not found' }, { status: 404 });
+  }
 
   return NextResponse.json({
-    companyName: b?.name ?? '',
-    slogan: b?.slogan ?? '',
-    bannerText: b?.banner_texts ?? '',
-    logoUrl: b?.logo_url ?? '',
-    bannerImages: b?.banner_images ?? [],
-    about: b?.about ?? '',
-    phone: b?.phone ?? '',
-    location: b?.location || {
-      street: '',
-      city: '',
-      state: '',
-      zip: '',
-    },
-    businessHours: b?.business_hours ?? '',
+    companyName: business.name ?? '',
+    slogan: business.slogan ?? '',
+    bannerText: business.banner_texts ?? [],
+    logoUrl: business.logo_url ?? '',
+    bannerImages: business.banner_images ?? [],
+    about: business.about ?? '',
+    phone: business.phone ?? '',
+    location: business.location ?? { street: '', city: '', state: '', zip: '' },
+    businessHours: business.business_hours ?? {},
     CTA: 'Book Now',
+    slug: business.slug ?? '',
+    tier: business.tier ?? 'Free',
   });
 }
+
 
 export async function PUT(req: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });

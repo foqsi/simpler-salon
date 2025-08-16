@@ -17,7 +17,7 @@ export interface Metrics {
   tier: string;
 }
 
-export type HomePageData = {
+export interface HomePageData {
   companyName: string;
   slogan: string;
   phone: string;
@@ -30,7 +30,21 @@ export type HomePageData = {
   CTA: string;
   logoUrl: string;
   bannerImages: string[];
+  bannerText: string[];
+  businessHours: Record<string, { open: string; close: string }>;
   about: string;
-  bannerText: string;
-  businessHours: string;
+  aboutImage?: string;
+}
+
+export const defaultHomePageData: HomePageData = {
+  companyName: '',
+  slogan: '',
+  phone: '',
+  location: { street: '', city: '', state: '', zip: '' },
+  CTA: '',
+  logoUrl: '',
+  about: '',
+  bannerImages: [],
+  bannerText: ['Test Text'],
+  businessHours: {},
 };
