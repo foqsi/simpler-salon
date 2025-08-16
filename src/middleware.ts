@@ -34,7 +34,7 @@ export async function middleware(req: NextRequest) {
   const parts = host.split('.');
   const subdomain = parts.length > 2 ? parts[0] : null;
 
-  const isDashboard = subdomain === 'dashboard' && isMainDomain;
+  // const isDashboard = subdomain === 'dashboard' && isMainDomain;
   const isUsingSubdomain = !isLocalhost && subdomain && isMainDomain && subdomain !== 'www';
 
   /** TODO:

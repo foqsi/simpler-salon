@@ -53,7 +53,7 @@ export default function WebsiteEditor() {
   }, []);
 
 
-  const handleChange = (field: keyof HomePageData, value: any) => {
+  const handleChange = (field: keyof HomePageData, value: unknown) => {
     if (!formData) return;
     setFormData((prev) => ({ ...prev!, [field]: value }));
   };
