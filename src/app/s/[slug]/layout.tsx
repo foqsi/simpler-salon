@@ -1,22 +1,23 @@
-// /app/s/[slug]/layout.tsx
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default async function SlugLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+
   const supabase = createServerComponentClient({ cookies });
 
   const { data: business } = await supabase
-    .from('business')
-    .select('name, logo_url, tier, slug, phone, slogan, business_hours')
-    .eq('slug', params.slug)
+    .from("business")
+    .select("name, logo_url, tier, slug, phone, slogan, business_hours")
+    .eq("slug", slug)
     .single();
 
   if (!business) {
@@ -24,12 +25,10 @@ export default async function SlugLayout({
   }
 
   return (
-    <html lang="en">
-      <body>
-        <Navbar business={business} />
-        {children}
-        <Footer business={business} />
-      </body>
-    </html>
+    <>
+      <Navbar business={business} />
+      {children}
+      <Footer business={business} />
+    </>
   );
 }
